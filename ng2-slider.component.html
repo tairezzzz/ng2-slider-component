@@ -1,64 +1,83 @@
-<div class="slider-input-block">
-    <input type="number"
-           id="{{id + '-start-value'}}"
-           npm publish
-           name="{{id + '-start-value'}}"
-           [step]="stepValue"
-           [min]="min"
-           [max]="max"
-           [(ngModel)]="startValue"
-           (change)="valueChanged($event, 0)"
-           #startInput
-           />
-</div>
-<div *ngIf="isRange" class="slider-input-block">
-    <input type="number"
-           id="{{id + '-end-value'}}"
-           class="slider-input-box"
-           name="{{id + '-end-value'}}"
-           [step]="stepValue"
-           [min]="min"
-           [max]="max"
-           [(ngModel)]="endValue"
-           (change)="valueChanged($event, 1)"
-           #endInput
-           />
+<!--<div class="slider-input-block">-->
+    <!--<input type="number"-->
+           <!--id="{{id + '-start-value'}}"-->
+           <!--npm publish-->
+           <!--name="{{id + '-start-value'}}"-->
+           <!--[step]="stepValue"-->
+           <!--[min]="min"-->
+           <!--[max]="max"-->
+           <!--[(ngModel)]="startValue"-->
+           <!--(change)="valueChanged($event, 0)"-->
+           <!--#startInput-->
+           <!--/>-->
+<!--</div>-->
+<!--<div *ngIf="isRange" class="slider-input-block">-->
+    <!--<input type="number"-->
+           <!--id="{{id + '-end-value'}}"-->
+           <!--class="slider-input-box"-->
+           <!--name="{{id + '-end-value'}}"-->
+           <!--[step]="stepValue"-->
+           <!--[min]="min"-->
+           <!--[max]="max"-->
+           <!--[(ngModel)]="endValue"-->
+           <!--(change)="valueChanged($event, 1)"-->
+           <!--#endInput-->
+           <!--/>-->
+<!--</div>-->
+
+<div class="slider-label-static" *ngIf="viewLabel=='static'">
+  <span class="start-value">{{startValue}} <span *ngIf="!isRange">{{unit}}</span></span><span *ngIf="isRange"> - <span class="end-value">{{endValue}}</span> {{unit}}</span>
 </div>
 
 <div style="clear:both; position:relative;"
-     class="slider-container ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"
+     class="slider-container ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" [class.disabled]="disabled" [class.with-label-right]="viewLabel=='right'"
      styled
-     [styleBlock] = "['{height: 26px; margin-top: 7px; margin-bottom: 12px}', '.slider-handle {box-sizing: content-box;}']">
-    <div #ribbon
-         id="{{id + '-ribbon'}}"
-         class="range-ribbon ui-slider-range ui-widget-header ui-corner-all">
+     [styleBlock] = "['.slider-handle {box-sizing: content-box;}']"
+     (click)="ribbonClicked($event)">
+  <div #ribbon
+       id="{{id + '-ribbon'}}"
+       class="range-ribbon ui-slider-range ui-widget-header ui-corner-all">
+    <div class="ribbon-divider divider{{i+1}}" *ngFor="let item of dividers; let i = index" [ngStyle]="{'left': 'calc('+item.left+'% - 2px)'}"></div>
+    <div class="start-label">{{min}} {{unit}}</div>
+    <div class="end-label">{{max}} {{unit}}</div>
+    <div class="slider-label-right" *ngIf="viewLabel=='right'">
+      <span class="start-value">{{startValue}} <span *ngIf="!isRange">{{unit}}</span></span><span *ngIf="isRange"> - <span class="end-value">{{endValue}}</span> {{unit}}</span>
     </div>
-    <span #start
-          slideAble
-          slideDirection="horisontal"
-          boundElement="{{id + '-ribbon'}}"
-          dynamicRightLimit="{{(isRange == true) ? id + '-right-handle' : null}}"
-          (onStopSliding)="onStopSliding($event)"
-          (onSliding)="onSliding($event)"
-          (onInit)="initHandlers('Start', $event)"
-          [id]="id + '-left-handle'"
-          [parent]="instance"
-          [step]="stepX"
-          class="slider-handle ui-slider-handle ui-state-default ui-corner-all"
-          tabindex="0"
-          style="left: 0%;"></span>
-    <span *ngIf="isRange"
-          #end
-          slideAble
-          slideDirection="horisontal"
-          boundElement="{{id + '-ribbon'}}"
-          [dynamicLeftLimit]="id + '-left-handle'"
-          (onStopSliding)="onStopSliding($event)"
-          (onSliding)="onSliding($event)"
-          (onInit)="initHandlers('End', $event)"
-          [id]="id + '-right-handle'"
-          [step]="stepX"
-          class="slider-handle ui-slider-handle ui-state-default ui-corner-all"
-          tabindex="0"
-          style="left: 100%;"></span>
+  </div>
+  <div #start
+        slideAble
+        slideDirection="horisontal"
+        boundElement="{{id + '-ribbon'}}"
+        dynamicRightLimit="{{(isRange == true) ? id + '-right-handle' : null}}"
+        (onStopSliding)="onStopSliding($event)"
+        (onSliding)="onSliding($event)"
+        (onInit)="initHandlers('Start', $event)"
+        [id]="id + '-left-handle'"
+        [parent]="instance"
+        [step]="stepX"
+        class="slider-handle ui-slider-handle ui-state-default ui-corner-all"
+        tabindex="0"
+        style="left: 0%;">
+    <div class="label-box" *ngIf="viewLabel=='title'">
+      <div class="label-tip">{{startValue}}</div>
+    </div>
+  </div>
+  <div *ngIf="isRange"
+        #end
+        slideAble
+        slideDirection="horisontal"
+        boundElement="{{id + '-ribbon'}}"
+        [dynamicLeftLimit]="id + '-left-handle'"
+        (onStopSliding)="onStopSliding($event)"
+        (onSliding)="onSliding($event)"
+        (onInit)="initHandlers('End', $event)"
+        [id]="id + '-right-handle'"
+        [step]="stepX"
+        class="slider-handle ui-slider-handle ui-state-default ui-corner-all"
+        tabindex="0"
+        style="left: 100%;">
+    <div class="label-box" *ngIf="viewLabel=='title'">
+      <div class="label-tip">{{endValue}}</div>
+    </div>
+  </div>
 </div>
