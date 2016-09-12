@@ -1,6 +1,7 @@
 /**
  * Created by Targus on 21.03.2016.
  * @author Bogdan Shapoval (targus) <it.targus@gmail.com>
+ * updated 2mc team
  */
 
 // declare var __moduleName: string, module:any;
@@ -31,8 +32,7 @@ export enum RangeHandle {Start, End, Both}
     selector: 'ng2-slider',
     moduleId: module.id,
     templateUrl: './ng2-slider.component.html',
-    // template: require('./ng2-slider.component.html'), // For webpack-compatible compiling
-    directives: [SlideAbleDirective, Ng2StyledDirective],
+    styleUrls: [ './ng2-slider.style.scss' ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -46,6 +46,12 @@ export class Ng2SliderComponent implements ISkinable{
     @Input() set value(value:string) {
         this.startValue = parseFloat(value);
     }
+    @Input() segments:number;
+    // @Input() startLabel:string;
+    // @Input() endLabel:string;
+    @Input() viewLabel:any;
+    @Input() unit:string;
+    @Input() disabled:boolean;
 
     @Input() normalHandlerStyle: Object;
     @Input() slidingHandlerStyle: Object;
@@ -105,6 +111,8 @@ export class Ng2SliderComponent implements ISkinable{
     private resultSlidingHandlerStyle = {};
     private resultRangeRibbonStyle:any = {};
     private resultHandleStyle = [];
+    label:string = '';
+    dividers:any = [];
 
     // Self-instance
     public instance: Ng2SliderComponent;
@@ -117,7 +125,17 @@ export class Ng2SliderComponent implements ISkinable{
     }
 
     ngOnInit() {
-        if (this.startValue != null && this.endValue == null) this.isRange = false;
+        if (this.startValue != null && this.endValue == null)
+            this.isRange = false;
+
+        // if (this.viewLabel != null)
+        //     this.viewLabel = true;
+        
+        if (this.disabled == null)
+            this.disabled = false;
+        else
+             if (this.disabled != false)
+                 this.disabled = true;
 
         Object.assign(this.initSlidingHandlerStyle, this.initNormalHandlerStyle);
         Object.assign(this.resultNormalHandlerStyle, this.initNormalHandlerStyle, this.normalHandlerStyle);
@@ -142,11 +160,16 @@ export class Ng2SliderComponent implements ISkinable{
             element: this.ribbon.nativeElement,
             min: this.min,
             max: this.max
-        });*/
+        });*/ 
+
+        for (let i = 0; i <= this.segments; i++){
+            let left = 100*i/this.segments;
+            this.dividers[i] = {'left': left};
+        }
    }
 
     refreshInputBox(boundingRect, handle:RangeHandle) {
-        let value = this.range.calculateValueFromX(boundingRect.left + Math.round(boundingRect.width / 2))
+        let value = this.range.calculateValueFromX(boundingRect.left + Math.round(boundingRect.width / 2));
         switch (handle) {
             case RangeHandle.Start:
                 this.startValue = value.toString();
@@ -165,7 +188,7 @@ export class Ng2SliderComponent implements ISkinable{
     }
 
     refreshInputBoxByPercent(percent, handle:RangeHandle) {
-        let precision = this.calculatePrecision(this.stepValue)
+        let precision = this.calculatePrecision(this.stepValue);
         let value = (+this.min + (this.max-this.min)*percent/100).toFixed(precision);
         switch (handle) {
             case RangeHandle.Start:
@@ -193,7 +216,7 @@ export class Ng2SliderComponent implements ISkinable{
      * Set new handle position when value was changed in input-box
      * @param handle
      */
-    valueChanged(el: any, handle:RangeHandle = RangeHandle.Both) {
+    valueChanged(el: any, handle:RangeHandle = RangeHandle.Both, onInit = true) {
 
         if (handle == RangeHandle.Both || handle == RangeHandle.Start) {
             // Affixing start value to the step grid
@@ -234,6 +257,8 @@ export class Ng2SliderComponent implements ISkinable{
                 this.handlers.End.redraw(this.range.calculateXFromValue(this.endValue), 0);
             }
         }
+
+        if (!onInit) this.rangeChangedTrigger();
 
         this.CDR.markForCheck();
         this.CDR.detectChanges();
@@ -318,14 +343,15 @@ export class Ng2SliderComponent implements ISkinable{
 
     setStartValue(v) {
         this.startValue = v;
-        this.valueChanged(RangeHandle.Start);
+        this.valueChanged({}, RangeHandle.Start, false);
         this.CDR.detectChanges();
         this.CDR.markForCheck();
+
     }
 
     setEndValue(v) {
         this.endValue = v;
-        this.valueChanged(RangeHandle.End);
+        this.valueChanged({}, RangeHandle.End, false);
         this.CDR.detectChanges();
         this.CDR.markForCheck();
     }
@@ -382,6 +408,16 @@ export class Ng2SliderComponent implements ISkinable{
         config = this._skins;
         return config;
     }
+
+    //click on ribbon for changing value
+    ribbonClicked(event){
+        if (!this.isRange) {
+            var clickedX = event.clientX;
+            var relativeClickedX = event.target.offsetLeft;
+            var clickedValue = this.range.calculateValueFromX(clickedX);
+            this.setStartValue(clickedValue);
+        }
+    }
 }
 
 
@@ -389,7 +425,12 @@ export class Range {
 
     private boundingRect:BoundingRectClass;
 
-    constructor(private config:{element:any, min:any, max:any}) {
+    //constructor(private elementRef: ElementRef, private renderer: Renderer, private config:{element:any, min:any, max:any}) {
+    constructor(
+        private config:{element:any, min:any, max:any},
+        // private elementRef: ElementRef,
+        // private renderer: Renderer
+    ) {
         if (typeof(this.config.min == 'string')) this.config.min = parseFloat(this.config.min);
         if (typeof(this.config.max == 'string')) this.config.max = parseFloat(this.config.max);
         this.boundingRect = config.element.getBoundingClientRect();
@@ -432,5 +473,7 @@ export class Range {
     getRightX() {
         return this.boundingRect.right;
     }
+
+
 
 }
