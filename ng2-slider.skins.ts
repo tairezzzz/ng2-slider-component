@@ -7,6 +7,27 @@ import {IStyledConfig} from 'ng2-styled-directive/ng2-styled.directive';
     export var skins:IStyledConfig = {
         default: {
             block: [
+                ".range-ribbon {border-radius: 5px; box-shadow: #aaa 0 0 0 1px; background: #ddd; height: 5px; position: absolute; left: 9px; right: 10px; top: 28px;}",
+                ".range-label {white-space: nowrap; text-align: left; position: absolute; left: 100%; top: 50%; -webkit-transform: translateY(-50%); transform: translateY(-50%); -webkit-transform-style: preserve-3d; transform-style: preserve-3d; margin-left: 10px; background: #fff; border-radius: 3px; box-shadow: #aaa 0 0 0 1px; font-size: 14px; padding: 4px 8px;}",
+                ".slider-handle {position: absolute; z-index: 2; top: 25px; width: 1px; height: 11px; z-index: 1;}",
+                ".slider-handle:before {content: ''; height: 5px; width: 5px; display: block; margin: 0 auto; background: #ccc; box-shadow: rgba(0,0,0,0.9) 0 1px 1px inset; position: absolute; left: -2px; top: 3px; z-index: 1; border-radius: 50%}",
+                ".slider-handle:after {content: ''; position: absolute; left: -9px; right: -9px; top: -4px; bottom: -4px; background-color: #e5e5e5; border-radius: 1em; background-image: -webkit-linear-gradient(#fff, #eee); background-image: linear-gradient(#fff, #eee); box-shadow: rgba(0,0,0,0.3) 0 0 0 1px;}",
+                ".slider-handle:focus,.slider-handle:hover {outline:0; cursor:pointer;}",
+                ".slider-handle.sliding:before,.slider-handle:hover:before {background: #4db1e0;}"
+            ]
+        },
+        'alerts': {
+            block: [
+                ".range-ribbon {position: absolute; width: 100%; height: 11px; box-shadow: rgba(0,0,0,0.2) 0 0 0 1px inset,#fff 0 1px; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; background: #e8e8e8; color: #535e69; top: 4px;}",
+                ".slider-handle {position: absolute; z-index: 2; top: 4px; width: 1px; height: 11px; z-index: 1;}",
+                ".slider-handle:before {content: ''; height: 5px; width: 5px; display: block; margin: 0 auto; background: #ccc; box-shadow: rgba(0,0,0,0.2) 0 1px 1px inset; position: absolute; left: -2px; top: 3px; z-index: 1; border-radius: 1em;}",
+                ".slider-handle:after {content: ''; position: absolute; left: -7px; right: -7px; top: -2px; bottom: -2px; background-color: #e5e5e5; border-radius: 1em; background-image: -webkit-linear-gradient(#fff, #eee); background-image: linear-gradient(#fff, #eee); box-shadow: rgba(0,0,0,0.3) 0 0 0 1px;}",
+                ".slider-handle:focus,.slider-handle:hover {outline:0; cursor:pointer;}",
+                ".slider-handle.sliding:before,.slider-handle:hover:before {background: #4db1e0;}"
+            ]
+        },
+        'simple-0': {
+            block: [
                 ".range-ribbon {position: absolute; width: 100%; height: 10px; border: 1px solid #ddd; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; background: #eee 50% top repeat-x; color: #333; top: 4px;}",
                 ".slider-handle {position: absolute; border: 1px solid #ccc; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; background: #f6f6f6 50% 50% repeat-x; width: 18px; height: 18px; box-sizing: border-box;}",
                 ".slider-handle.sliding {border: 1px solid #fbcb09; background: #fdf5ce 50% 50% repeat-x;}"
